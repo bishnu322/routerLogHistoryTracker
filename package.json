@@ -1,0 +1,15 @@
+{
+  "name": "reqrestrac",
+  "version": "1.0.0",
+  "description": "track req method ",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch src/server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
