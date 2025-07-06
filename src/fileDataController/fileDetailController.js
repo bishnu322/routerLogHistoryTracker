@@ -5,8 +5,7 @@ const fileDetailController = (userReqDetails, count) => {
   if (!fs.existsSync("./log")) {
     fs.mkdir("./log", (error) => {
       if (error) {
-        console.error("Error creating directory:", error);
-        return;
+        return console.error("Error creating directory:", error);
       }
 
       fs.writeFile("./log/log.txt", logData, (error) => {

@@ -8,3 +8,4 @@
 8: {"host":"localhost:2020","origin":"/category/43","requestMethod":"PATCH","year":2025,"month":6,"day":"Sunday","hours":13,"minute":30,"second":38,"milliSecond":660}
 9: {"host":"localhost:2020","origin":"/category/43","requestMethod":"PUT","year":2025,"month":6,"day":"Sunday","hours":13,"minute":30,"second":42,"milliSecond":332}
 10: {"host":"localhost:2020","origin":"/category/43","requestMethod":"POST","year":2025,"month":6,"day":"Sunday","hours":13,"minute":30,"second":45,"milliSecond":754}
+1: {"host":"localhost:2020","origin":"/user","requestMethod":"GET","year":2025,"month":"July","day":"Sunday","hours":14,"minute":25,"second":59,"milliSecond":604}

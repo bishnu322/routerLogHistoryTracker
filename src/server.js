@@ -19,14 +19,29 @@ const getDetailsOfRouter = (req, res, next) => {
     "Friday",
     "Saturday",
   ];
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
   const day = days[d.getDay()] || "Unknown";
+  let month = months[d.getMonth()];
 
   let userReqDetails = {
     host: req.get("host"),
     origin: req.originalUrl,
     requestMethod: req.method,
     year: d.getFullYear(),
-    month: d.getMonth(),
+    month: month,
     day: day,
     hours: d.getHours(),
     minute: d.getMinutes(),
