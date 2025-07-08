@@ -1,8 +1,10 @@
 export const getAllUsers = (req, res) => {
-  res.json({
-    message: "all user get request",
-  });
-  console.log("all user get request");
+  try {
+    res.json({
+      message: "all user get request",
+    });
+    console.log("all user get request");
+  } catch (error) {}
 };
 
 export const registerUser = (req, res) => {

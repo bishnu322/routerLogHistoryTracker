@@ -1,57 +1,12 @@
 import express from "express";
 import userRouter from "./routes/user.routes.js";
 import userCategory from "./routes/category.routes.js";
-import fileDetailController from "./fileDataController/fileDetailController.js";
+import { getDetailsOfRouter } from "./fileDataController/getDetailOfRouter.js";
 
 const app = express();
 const PORT = 2020;
 let count = 0;
 
-const getDetailsOfRouter = (req, res, next) => {
-  const d = new Date();
-  count = count + 1;
-  const days = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ];
-  const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-  const day = days[d.getDay()] || "Unknown";
-  let month = months[d.getMonth()];
-
-  let userReqDetails = {
-    host: req.get("host"),
-    origin: req.originalUrl,
-    requestMethod: req.method,
-    year: d.getFullYear(),
-    month: month,
-    day: day,
-    hours: d.getHours(),
-    minute: d.getMinutes(),
-    second: d.getSeconds(),
-    milliSecond: d.getMilliseconds(),
-  };
-  //   console.log(req.get("host"), req.originalUrl);
-  fileDetailController(userReqDetails, count);
-  next();
-};
 app.use(getDetailsOfRouter);
 
 app.get("/", (req, res) => {
