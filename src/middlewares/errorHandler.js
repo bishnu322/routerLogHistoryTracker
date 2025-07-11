@@ -1,10 +1,20 @@
-class CustomErrorHandler extends Error {
+export class CustomErrorHandler extends Error {
   constructor(message, statusCode) {
     super(message);
     this.statusCode = statusCode;
     this.status = statusCode >= 400 && statusCode < 500 ? "failed" : "error";
     this.success = false;
     Error.captureStackTrace(this, CustomErrorHandler);
+  }
+}
+
+export class ForbiddenHandler extends Error {
+  constructor(message) {
+    super(message);
+    this.statusCode = 400;
+    this.status = statusCode >= 400 && statusCode < 500 ? "failed" : "error";
+    this.success = false;
+    Error.captureStackTrace(this, ForbiddenHandler);
   }
 }
 
@@ -20,4 +30,4 @@ export const errorHandler = (error, req, res, next) => {
   });
 };
 
-export default CustomErrorHandler;
+// export default CustomErrorHandler;

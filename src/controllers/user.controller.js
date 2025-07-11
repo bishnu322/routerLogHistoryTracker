@@ -1,10 +1,41 @@
-import CustomErrorHandler from "../middlewares/errorHandler.js";
-const users = [];
-export const getAllUsers = (req, res, next) => {
+import mongoose from "mongoose";
+import { CustomErrorHandler } from "../middlewares/errorHandler.js";
+
+const userSchema = new mongoose.Schema(
+  {
+    firstName: {
+      type: String,
+      required: [true, "firstName is required"],
+      trim: true,
+    },
+    lastName: {
+      type: String,
+      required: [true, "lastName is required"],
+      trim: true,
+    },
+    email: {
+      type: String,
+      required: [true, "Already exists"],
+      trim: true,
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: [true, "password is required"],
+      min: 5,
+    },
+  },
+  { timestamps: true }
+);
+
+const User = mongoose.model("User", userSchema);
+
+export const getAllUsers = async (req, res, next) => {
   try {
-    res.json({
+    const user = await User.find();
+    res.status(200).json({
       message: "all user get request",
-      data: users,
+      data: user,
     });
     console.log("all user get request");
   } catch (error) {
@@ -12,24 +43,14 @@ export const getAllUsers = (req, res, next) => {
   }
 };
 
-export const registerUser = (req, res, next) => {
+export const registerUser = async (req, res, next) => {
   try {
-    const { fullName, email, password } = req.body;
+    const { firstName, lastName, email, password } = req.body;
+    const user = await User.insertOne({ firstName, lastName, email, password });
 
-    if (!fullName) {
-      throw new CustomErrorHandler("Enter fullname", 400);
-    }
-    if (!email) {
-      throw new CustomErrorHandler("Enter email", 400);
-    }
-    if (!password) {
-      throw new CustomErrorHandler("Enter password", 400);
-    }
-
-    users.push({ ...req.body, id: users.length + 1 });
-    res.json({
+    res.status(201).json({
       message: "user registered successfully..",
-      data: { ...req.body, id: users.length },
+      data: user,
     });
   } catch (error) {
     next(error);
@@ -51,7 +72,7 @@ export const updateUser = (req, res, next) => {
     // Update user data
     users[userIndex] = { ...users[userIndex], ...updateData };
 
-    res.json({
+    res.status(200).json({
       message: `User updated successfully`,
       data: users[userIndex],
     });
@@ -72,7 +93,7 @@ export const getUserById = (req, res, next) => {
       throw new CustomErrorHandler(`User with ID ${id} not found`, 404);
     }
 
-    res.json({
+    res.status(200).json({
       message: `User retrieved successfully`,
       data: user,
     });
@@ -96,7 +117,7 @@ export const removeUser = (req, res, next) => {
     // Remove user
     const removedUser = users.splice(userIndex, 1)[0];
 
-    res.json({
+    res.status(200).json({
       message: `User deleted successfully`,
       data: removedUser,
     });

@@ -1,9 +1,10 @@
-import CustomErrorHandler from "../middlewares/errorHandler.js";
+import { CustomErrorHandler } from "../middlewares/errorHandler.js";
 
 const categories = [];
-export const getAllCategory = (req, res, next) => {
+
+export const getAllCategory = async (req, res, next) => {
   try {
-    res.json({
+    res.status(200).json({
       message: "All categories",
       data: categories,
     });
@@ -15,13 +16,14 @@ export const getAllCategory = (req, res, next) => {
 export const registerCategory = (req, res, next) => {
   try {
     const { categoryName } = req.body;
+
     if (!categoryName) {
       throw new CustomErrorHandler("Enter category name", 400);
     }
 
     const categoryData = { ...req.body, id: categories.length + 1 };
     categories.push(categoryData);
-    res.json({
+    res.status(201).json({
       message: `category registered successfully`,
       data: categoryData,
     });
@@ -48,7 +50,7 @@ export const updateCategory = (req, res, next) => {
       ...categoryData,
     };
 
-    res.json({
+    res.status(200).json({
       message: `Category updated successfully`,
       data: categoryData,
     });
@@ -70,7 +72,7 @@ export const getCategoryById = (req, res, next) => {
       );
     }
 
-    res.json({
+    res.status(200).json({
       message: `your searched data ${id}`,
       data: categoryFound,
     });
@@ -82,15 +84,17 @@ export const getCategoryById = (req, res, next) => {
 export const removeCategory = (req, res, next) => {
   try {
     const { id } = req.params;
+
     const categoryIndex = categories.findIndex(
       (cat) => cat.id === parseInt(id)
     );
 
     const removedCategory = categories.splice(categoryIndex, 1);
+
     if (!removeCategory) {
       throw new CustomErrorHandler("Enter valid ${id} to remove category", 400);
     }
-    res.json({
+    res.status(200).json({
       message: `removed ${id} successfully`,
       data: removedCategory,
     });
