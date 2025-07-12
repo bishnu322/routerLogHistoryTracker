@@ -1,104 +1,100 @@
 import { CustomErrorHandler } from "../middlewares/errorHandler.js";
+import { Category } from "../models/category.models.js";
+import { ForbiddenHandler } from "../middlewares/errorHandler.js";
 
-const categories = [];
-
-export const getAllCategory = async (req, res, next) => {
+export const getAllCategory = async (req, res) => {
   try {
+    if (!categories) {
+      throw new ForbiddenHandler("All categories cannot found");
+    }
+
+    const categories = await Category.find();
+
     res.status(200).json({
       message: "All categories",
       data: categories,
     });
   } catch (error) {
-    next(error);
+    throw new CustomErrorHandler("all category error", 500);
   }
 };
 
-export const registerCategory = (req, res, next) => {
+export const registerCategory = async (req, res) => {
   try {
-    const { categoryName } = req.body;
+    const { id } = req.params;
+    const { categoryName, categoryType } = req.body;
 
     if (!categoryName) {
-      throw new CustomErrorHandler("Enter category name", 400);
+      throw new ForbiddenHandler("categoryName cannot be empty");
+    }
+    if (!categoryType) {
+      throw new ForbiddenHandler("categoryName cannot be empty");
     }
 
-    const categoryData = { ...req.body, id: categories.length + 1 };
-    categories.push(categoryData);
+    const categories = await Category.insertOne({ categoryName, categoryType });
+
     res.status(201).json({
       message: `category registered successfully`,
-      data: categoryData,
+      data: categories,
     });
   } catch (error) {
-    next(error);
+    throw new CustomErrorHandler(" register category error", 500);
   }
 };
 
-export const updateCategory = (req, res, next) => {
+export const updateCategory = async (req, res) => {
   try {
     const { id } = req.params;
     const categoryData = req.body;
 
-    const categoryIndex = categories.findIndex(
-      (cat) => cat.id === parseInt(id)
-    );
-
-    if (categoryIndex === -1) {
-      throw new CustomErrorHandler(`Category index ${id} not found`, 400);
+    if (!categoryData) {
+      throw new ForbiddenHandler("Update filed should be field by any data");
     }
 
-    categories[categoryIndex] = {
-      ...categories[categoryIndex],
-      ...categoryData,
-    };
+    const categories = await Category.updateOne(
+      { _id: id },
+      { $set: categoryData }
+    );
 
     res.status(200).json({
       message: `Category updated successfully`,
-      data: categoryData,
+      data: categories,
     });
   } catch (error) {
-    next(error);
+    throw new CustomErrorHandler("all update category error", 500);
   }
 };
 
-export const getCategoryById = (req, res, next) => {
+export const getCategoryById = async (req, res) => {
   try {
     const { id } = req.params;
-
-    const categoryFound = categories.find((cat) => cat.id === parseInt(id));
-
-    if (!categoryFound) {
-      throw new CustomErrorHandler(
-        "Enter valid id to search any category",
-        400
-      );
+    if (!id) {
+      throw new ForbiddenHandler("Id should be provided");
     }
 
+    const categories = await Category.findById(id);
     res.status(200).json({
       message: `your searched data ${id}`,
-      data: categoryFound,
+      data: categories,
     });
   } catch (error) {
-    next(error);
+    throw new CustomErrorHandler("all category by ID error", 500);
   }
 };
 
-export const removeCategory = (req, res, next) => {
+export const removeCategory = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const categoryIndex = categories.findIndex(
-      (cat) => cat.id === parseInt(id)
-    );
-
-    const removedCategory = categories.splice(categoryIndex, 1);
-
-    if (!removeCategory) {
-      throw new CustomErrorHandler("Enter valid ${id} to remove category", 400);
+    if (!id) {
+      throw new ForbiddenHandler("provide id to remove element");
     }
+    const categories = await Category.deleteOne({ _id: id });
     res.status(200).json({
       message: `removed ${id} successfully`,
-      data: removedCategory,
+      data: categories,
     });
   } catch (error) {
-    next(error);
+    throw new CustomErrorHandler("all remove category error", 500);
   }
 };
