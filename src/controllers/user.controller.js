@@ -1,49 +1,19 @@
-import mongoose from "mongoose";
-import { CustomErrorHandler } from "../middlewares/errorHandler.js";
+import { User } from "../models/user.models.js";
 
-const userSchema = new mongoose.Schema(
-  {
-    firstName: {
-      type: String,
-      required: [true, "firstName is required"],
-      trim: true,
-    },
-    lastName: {
-      type: String,
-      required: [true, "lastName is required"],
-      trim: true,
-    },
-    email: {
-      type: String,
-      required: [true, "Already exists"],
-      trim: true,
-      unique: true,
-    },
-    password: {
-      type: String,
-      required: [true, "password is required"],
-      min: 5,
-    },
-  },
-  { timestamps: true }
-);
-
-const User = mongoose.model("User", userSchema);
-
-export const getAllUsers = async (req, res, next) => {
+export const getAllUsers = async (req, res) => {
   try {
     const user = await User.find();
+
     res.status(200).json({
       message: "all user get request",
       data: user,
     });
-    console.log("all user get request");
   } catch (error) {
     next(error);
   }
 };
 
-export const registerUser = async (req, res, next) => {
+export const registerUser = async (req, res) => {
   try {
     const { firstName, lastName, email, password } = req.body;
     const user = await User.insertOne({ firstName, lastName, email, password });
@@ -57,71 +27,47 @@ export const registerUser = async (req, res, next) => {
   }
 };
 
-export const updateUser = (req, res, next) => {
+export const updateUser = async (req, res) => {
   try {
     const { id } = req.params;
     const updateData = req.body;
 
-    // Find user by ID
-    const userIndex = users.findIndex((user) => user.id === parseInt(id));
-
-    if (userIndex === -1) {
-      throw new CustomErrorHandler(`User with ID ${id} not found`, 404);
-    }
-
-    // Update user data
-    users[userIndex] = { ...users[userIndex], ...updateData };
+    const user = await User.updateOne({ _id: id }, { $set: updateData });
 
     res.status(200).json({
       message: `User updated successfully`,
-      data: users[userIndex],
+      data: user,
     });
-    console.log(`User ${id} updated successfully`);
   } catch (error) {
     next(error);
   }
 };
 
-export const getUserById = (req, res, next) => {
+export const getUserById = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Find user by ID
-    const user = users.find((user) => user.id === parseInt(id));
-
-    if (!user) {
-      throw new CustomErrorHandler(`User with ID ${id} not found`, 404);
-    }
+    const user = await User.findById(id);
 
     res.status(200).json({
       message: `User retrieved successfully`,
       data: user,
     });
-    console.log(`User ${id} retrieved successfully`);
   } catch (error) {
     next(error);
   }
 };
 
-export const removeUser = (req, res, next) => {
+export const removeUser = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Find user index
-    const userIndex = users.findIndex((user) => user.id === parseInt(id));
-
-    if (userIndex === -1) {
-      throw new CustomErrorHandler(`User with ID ${id} not found`, 404);
-    }
-
-    // Remove user
-    const removedUser = users.splice(userIndex, 1)[0];
+    const user = await User.deleteOne({ _id: id });
 
     res.status(200).json({
       message: `User deleted successfully`,
-      data: removedUser,
+      data: user,
     });
-    console.log(`User ${id} deleted successfully`);
   } catch (error) {
     next(error);
   }
