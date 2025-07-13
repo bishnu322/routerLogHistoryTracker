@@ -12,7 +12,8 @@ export class ForbiddenHandler extends Error {
   constructor(message) {
     super(message);
     this.statusCode = 400;
-    this.status = statusCode >= 400 && statusCode < 500 ? "failed" : "error";
+    this.status =
+      this.statusCode >= 400 && this.statusCode < 500 ? "failed" : "error";
     this.success = false;
     Error.captureStackTrace(this, ForbiddenHandler);
   }

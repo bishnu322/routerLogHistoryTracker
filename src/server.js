@@ -31,6 +31,7 @@ app.all("/{*abc}", async (req, res, next) => {
   const error = new Error(message);
   next(error);
 });
+
 // Error handler middleware should be placed after all routes
 app.use(errorHandler);
 
