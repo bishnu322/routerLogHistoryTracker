@@ -116,6 +116,7 @@ export const removeCategory = async (req, res) => {
     if (error instanceof Error) {
       error;
     }
+
     throw new CustomErrorHandler("all remove category error", 500);
   }
 };
